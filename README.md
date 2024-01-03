@@ -1,5 +1,7 @@
 ## Cenário Geral
 
+![cenariogeral](docs/images/cenariogeral.png)
+
 ### Objetivo do Projeto
 O projeto tem como objetivo recuperar dados de eventos do chat Blip e realizar análises desses dados para proporcionar insights sobre a interação dos usuários. Utiliza-se o Blip Builder para a construção do chat, e os eventos capturados incluem informações como categoria, ação, nome do estado, ID do estado, ID único da mensagem e estado anterior.
 
@@ -22,6 +24,9 @@ A captura dos eventos do Blip ocorre periodicamente, sendo executada a cada minu
 3. **Controller (Controlador):** Atua como intermediário entre o Model e a View. Recebe entradas do usuário, atualiza o Model conforme necessário e atualiza a View para refletir as mudanças no Model.
 
 ## MVC no Projeto
+
+![metodologiamvc](docs/images/metodologiamvc.png)
+
 
 ### Estrutura
 
