@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insight Charts</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+            background-color: #fff;
+            width: 50%; /* Cada <td> ocupa 50% da largura da tela */
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        code {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        canvas {
+            width: 100%; /* Ocupa 100% da largura do contêiner pai */
+            height: 400px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            td {
+                width: 100%; /* Em telas menores, cada <td> ocupa 100% da largura da tela */
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+    </style>     
+    <!-- Adicione os scripts necessários do Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.min.js"></script>
+    <script src="https://cdn.skypack.dev/date-fns@2.27.0"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+</head>
+<body>
+
+<!-- Crie uma tabela para organizar os gráficos -->
+<table>
+    <tr>
+        <!-- Primeira linha da tabela -->
+
+        <!-- Insight 1: Número de Eventos por Categoria -->
+        <td>
+            <h2>Insight 1</h2>
+            <p><strong>Descrição:</strong> Contagem dos eventos agrupados por categoria.</p>
+            <p><strong>Gráfico:</strong> O gráfico de barras é eficaz para visualizar a distribuição de eventos em categorias, tornando fácil a identificação das categorias mais e menos frequentes.</p>
+            <p><strong>Query:</strong></p>
+            <code>
+                SELECT category, COUNT(*) FROM EventTracker GROUP BY category
+            </code>
+            <canvas id="eventsByCategoryChart" width="400" height="400"></canvas>
+        </td>
+
+        <!-- Insight 2: Número de Eventos por Ação -->
+        <td>
+            <h2>Insight 2</h2>
+            <p><strong>Descrição:</strong> Contagem dos eventos agrupados por ação.</p>
+            <p><strong>Gráfico:</strong> O gráfico de barras é eficiente para representar a distribuição de eventos em diferentes ações, facilitando a análise da frequência de cada ação.</p>
+            <p><strong>Query:</strong></p>
+            <code>
+                SELECT action, COUNT(*) FROM EventTracker GROUP BY action
+            </code>
+            <canvas id="eventsByActionChart" width="400" height="400"></canvas>
+        </td>
+    </tr>
+    <tr> 
+        <!-- Insight 3: Distribuição Temporal dos Eventos -->
+        <td>
+            <h2>Insight 3</h2>
+            <p><strong>Descrição:</strong> Contagem dos eventos agrupados por hora.</p>
+            <p><strong>Gráfico:</strong> O gráfico de linhas é adequado para visualizar a variação da contagem de eventos ao longo do tempo, destacando padrões temporais.</p>
+            <p><strong>Query:</strong></p>
+            <code>
+                SELECT date_trunc('hour', to_timestamp(storagedate, 'YYYY-MM-DD"T"HH24:MI:SS.MSZ')), COUNT(*) FROM EventTracker GROUP BY hour ORDER BY hour
+            </code>
+            <canvas id="temporalDistributionChart" width="400" height="400"></canvas>
+        </td>
+
+        <!-- Segunda linha da tabela -->
+
+        <!-- Insight 4: Número de Eventos por Nome de Estado -->
+        <td>
+            <h2>Insight 4</h2>
+            <p><strong>Descrição:</strong> Contagem dos eventos agrupados por nome de estado.</p>
+            <p><strong>Gráfico:</strong> O gráfico de barras é eficiente para representar a distribuição de eventos em diferentes estados, facilitando a análise da frequência de cada estado.</p>
+            <p><strong>Query:</strong></p>
+            <code>
+                SELECT stateName, COUNT(*) FROM EventTracker GROUP BY stateName
+            </code>
+            <canvas id="eventsByStateNameChart" width="400" height="400"></canvas>
+        </td>
+    </tr>
+    <tr> 
+        <!-- Insight 5: Número de Eventos por ID de Estado -->
+        <td>
+            <h2>Insight 5</h2>
+            <p><strong>Descrição:</strong> Contagem dos eventos agrupados por ID de estado.</p>
+            <p><strong>Gráfico:</strong> O gráfico de barras é uma escolha eficiente para representar a distribuição de eventos em diferentes IDs de estado, proporcionando uma visão clara da frequência de cada ID.</p>
+            <p><strong>Query:</strong></p>
+            <code>
+                SELECT stateId, COUNT(*) FROM EventTracker GROUP BY stateId
+            </code>
+            <canvas id="eventsByStateIdChart" width="400" height="400"></canvas>
+        </td>
+  
+        <!-- Insight 6: Número de Eventos por Nome de Estado Anterior -->
+        <td>
+            <h2>Insight 6</h2>
+            <p><strong>Descrição:</strong> Contagem dos eventos agrupados por nome do estado anterior.</p>
+            <p><strong>Gráfico:</strong> O gráfico de barras é eficiente para representar a distribuição de eventos em diferentes estados anteriores, facilitando a análise da frequência de cada estado anterior.</p>
+            <p><strong>Query:</strong></p>
+            <code>
+                SELECT previousStateName, COUNT(*) FROM EventTracker GROUP BY previousStateName
+            </code>
+            <canvas id="eventsByPreviousStateNameChart" width="400" height="400"></canvas>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><h2>Dados</h2>
+        </td>
+    </tr>
+    <tr >
+        
+        <td colspan="2">
+          <div style="margin-top: 20px;">
+            <table id="dataTable" class="display">
+              <thead>
+                <tr>
+                  <th>Data de Armazenamento</th>
+                  <th>Categoria</th>
+                  <th>Ação</th>
+                  <th>Nome do Estado</th>
+                  <th>ID do Estado</th>
+                  <th>ID da Mensagem</th>
+                  <th>ID do Estado Anterior</th>
+                  <th>Nome do Estado Anterior</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dados da tabela aqui -->
+              </tbody>
+            </table>
+          </div>
+        </td>
+    </tr>
+
+</table>
+
+<script src="/js/datatable.js"></script>
+<script src="/js/chart-scripts.js"></script>
+
+</body>
+</html>

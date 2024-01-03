@@ -1,0 +1,39 @@
+version: '2.1'
+services:
+
+  db:
+    image: postgres:15.3-alpine
+    platform: linux/amd64
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: db_pass
+      POSTGRES_USER: db_user
+    ports:
+      - 5432:5432
+    volumes:
+      #- './db-data:/var/lib/mysql'
+      - ./server/src/main/resources/db/migration:/docker-entrypoint-initdb.d/:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "dbname=postgres", "-U", "db_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-server:
+    build:
+      context: server
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - '8081:8081'
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATASOURCE_USERNAME: db_user
+      DATASOURCE_PASSWORD: db_pass
+      DATASOURCE_HOST: db
+      PROFILE: prd
+      SERVICE_PORT: 8081
+      BLIP_KEY: aGFybW9ueWh1YjE6NUd0eEU4a0JFdE9uRlBPS0NFWXE=
